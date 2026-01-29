@@ -7,7 +7,7 @@ export const geminiService = {
    * Concierge Digital
    * Analisa as respostas e retorna um roteiro personalizado via Gemini.
    */
-  async generateItinerary(answers: Record<string, any>) {
+  async generateItinerary(answers: Record<string, any>): Promise<string> {
     try {
       const prompt = `
         Atue como um Concierge Digital especialista em turismo em Aracaju (Sergipe).
@@ -24,14 +24,12 @@ export const geminiService = {
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
+        model: 'gemini-2.0-flash-exp', 
         contents: prompt,
-        config: {
-          thinkingConfig: { thinkingBudget: 2048 }
-        }
       });
 
-      return response.text || "Não foi possível gerar o roteiro. Tente novamente.";
+      // Garante retorno de string mesmo se undefined
+      return response.text ?? "Não foi possível gerar o roteiro. Tente novamente.";
 
     } catch (error) {
       console.error('Erro na IA:', error);
@@ -43,7 +41,7 @@ export const geminiService = {
    * BI Insights
    * Gera um texto analítico baseado nos dados brutos fornecidos.
    */
-  async getBIInsights(summary: any) {
+  async getBIInsights(summary: any): Promise<string> {
     try {
       const prompt = `
         Atue como um Analista de Dados Sênior especializado em Turismo.
@@ -60,14 +58,11 @@ export const geminiService = {
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
+        model: 'gemini-2.0-flash-exp',
         contents: prompt,
-        config: {
-          thinkingConfig: { thinkingBudget: 2048 }
-        }
       });
 
-      return response.text || "Insights indisponíveis no momento.";
+      return response.text ?? "Insights indisponíveis no momento.";
 
     } catch (error) {
       console.error('Erro ao gerar insights:', error);
