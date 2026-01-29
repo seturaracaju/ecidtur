@@ -1,26 +1,43 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// SINGLETON LAZY INSTANCE
+// Isso impede que o construtor rode no carregamento da página, evitando o crash "Uncaught Error"
+const getAI = () => {
+  try {
+    // Tenta obter a chave do Vite (Vercel) ou do Node (Local)
+    const apiKey = import.meta.env.VITE_API_KEY || (typeof process !== 'undefined' ? process.env.API_KEY : undefined);
+    
+    if (!apiKey) {
+      console.warn("E-CIDTUR IA: Chave de API não detectada. As funções inteligentes retornarão mocks.");
+      return null;
+    }
+    return new GoogleGenAI({ apiKey });
+  } catch (err) {
+    console.error("Erro fatal ao inicializar IA:", err);
+    return null;
+  }
+};
 
 export const geminiService = {
   /**
    * Concierge Digital
-   * Analisa as respostas e retorna um roteiro personalizado via Gemini.
    */
   async generateItinerary(answers: Record<string, any>): Promise<string> {
+    const ai = getAI();
+    
+    // Fallback imediato se não houver IA configurada
+    if (!ai) {
+      return "Roteiro Offline: Recomendamos iniciar pela Orla de Atalaia, visitar o Oceanário e finalizar o dia na Passarela do Caranguejo.";
+    }
+
     try {
       const prompt = `
         Atue como um Concierge Digital especialista em turismo em Aracaju (Sergipe).
-        Com base nas respostas do turista abaixo, crie um roteiro personalizado de 1 dia (manhã, tarde e noite).
+        Com base nas respostas do turista abaixo, crie um roteiro personalizado de 1 dia.
         
-        Perfil do Turista:
-        ${JSON.stringify(answers, null, 2)}
+        Perfil: ${JSON.stringify(answers)}
         
-        Regras:
-        1. Seja acolhedor e entusiasta.
-        2. Foque nas preferências indicadas (ex: se está com crianças, foque em atividades infantis; se gosta de cultura, museus).
-        3. O roteiro deve ser lógico geograficamente.
-        4. Formate a resposta de forma clara, sem Markdown complexo, apenas texto corrido e quebras de linha.
+        Formate como texto corrido, amigável e direto.
       `;
 
       const response = await ai.models.generateContent({
@@ -28,33 +45,29 @@ export const geminiService = {
         contents: prompt,
       });
 
-      // Garante retorno de string mesmo se undefined
-      return response.text ?? "Não foi possível gerar o roteiro. Tente novamente.";
+      return response.text || "Não foi possível gerar o roteiro personalizado no momento.";
 
     } catch (error) {
-      console.error('Erro na IA:', error);
-      return "Aracaju é encantadora! Recomendamos iniciar pela Orla de Atalaia, visitar o Oceanário e finalizar o dia provando nosso caranguejo na Passarela. Aproveite a cidade!";
+      console.error('Erro na geração de roteiro:', error);
+      return "Aracaju é encantadora! Visite a Orla de Atalaia e o Mercado Municipal.";
     }
   },
 
   /**
    * BI Insights
-   * Gera um texto analítico baseado nos dados brutos fornecidos.
    */
   async getBIInsights(summary: any): Promise<string> {
+    const ai = getAI();
+
+    if (!ai) {
+      return "Modo Offline: Os dados indicam estabilidade no fluxo turístico. Recomenda-se monitorar a satisfação nos fins de semana.";
+    }
+
     try {
       const prompt = `
-        Atue como um Analista de Dados Sênior especializado em Turismo.
-        Analise o resumo estatístico abaixo e forneça insights estratégicos para a Secretaria de Turismo.
-        
-        Dados:
-        ${JSON.stringify(summary, null, 2)}
-        
-        Forneça:
-        1. Análise de Volume e Significância.
-        2. Análise Geográfica (Origem dos turistas).
-        3. Análise de Satisfação (NPS).
-        4. Recomendações de ação baseadas nos dados.
+        Atue como Analista de Dados de Turismo.
+        Analise este resumo JSON e forneça 3 insights estratégicos curtos:
+        ${JSON.stringify(summary)}
       `;
 
       const response = await ai.models.generateContent({
@@ -62,11 +75,11 @@ export const geminiService = {
         contents: prompt,
       });
 
-      return response.text ?? "Insights indisponíveis no momento.";
+      return response.text || "Análise indisponível.";
 
     } catch (error) {
-      console.error('Erro ao gerar insights:', error);
-      return "A análise preliminar indica consistência na coleta de dados. Recomenda-se continuar o monitoramento para identificar padrões de sazonalidade mais claros.";
+      console.error('Erro na geração de insights:', error);
+      return "Não foi possível processar os insights avançados no momento.";
     }
   }
 };

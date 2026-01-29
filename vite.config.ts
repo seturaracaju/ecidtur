@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      'process.env': JSON.stringify(env)
+      // Garante que process.env.API_KEY esteja disponível sem quebrar o build
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.VITE_API_KEY)
     }
   }
 })
