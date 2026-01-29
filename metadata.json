@@ -1,6 +1,6 @@
 {
   "name": "E-CIDTUR - Central de Inteligência de Dados do Turismo",
-  "description": "Plataforma avançada de BI e coleta de dados governamentais para o turismo de Aracaju/SE, com detecção de fraudes, gamificação e IA Concierge.",
+  "description": "E-CIDTUR é a Central de Inteligência de Dados do Turismo de Aracaju/SE, com detecção de fraudes, gamificação e IA Concierge.",
   "requestFramePermissions": [
     "geolocation"
   ]

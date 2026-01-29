@@ -57,10 +57,10 @@ export default function Login() {
             </div>
             
             <h2 className="text-4xl font-extrabold text-white leading-tight">
-              Transformando Dados <br /> em Inteligência <br /> Turística.
+              E-CIDTUR
             </h2>
-            <p className="text-sky-100 mt-6 max-w-sm text-lg font-medium">
-              E-CIDTUR: A plataforma oficial para gestão estratégica do turismo em Aracaju.
+            <p className="text-sky-100 mt-6 max-w-sm text-xl font-medium leading-relaxed">
+              A Central de Inteligência de Dados do Turismo.
             </p>
           </div>
 
@@ -78,7 +78,7 @@ export default function Login() {
         <div className="w-full lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
           <div className="mb-10 text-center lg:text-left">
             <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">Painel de Acesso</h3>
-            <p className="text-slate-500 mt-2 font-medium">Bem-vindo à Central de Inteligência.</p>
+            <p className="text-slate-500 mt-2 font-medium">Insira suas credenciais para gerenciar indicadores e estratégias.</p>
           </div>
 
           {error && (
