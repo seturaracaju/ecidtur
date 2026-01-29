@@ -31,7 +31,7 @@ export const geminiService = {
         }
       });
 
-      return response.text;
+      return response.text || "Não foi possível gerar o roteiro. Tente novamente.";
 
     } catch (error) {
       console.error('Erro na IA:', error);
@@ -67,7 +67,7 @@ export const geminiService = {
         }
       });
 
-      return response.text;
+      return response.text || "Insights indisponíveis no momento.";
 
     } catch (error) {
       console.error('Erro ao gerar insights:', error);
